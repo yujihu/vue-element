@@ -32,7 +32,8 @@
             return {
                 ruleForm2: {
                     pass: '',
-                    username: ''
+                    username: '',
+                    userid: ''
                 },
                 rules2: {
                     pass: [{
@@ -54,9 +55,10 @@
                 this.$refs.ruleForm2.validate((valid) => {
                     if (valid) {
                         // alert('submit!');
+                        this.$store.commit('setUser', this.ruleForm2);
                         this.$router.replace({
                             path: 'home/'
-                        })
+                        });
                     } else {
                         // console.log('error submit!!');
                         return false;
