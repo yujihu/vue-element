@@ -1,22 +1,27 @@
 <template>
-  <div>
-    <div>
-      <el-menu theme="dark" default-active="1" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-        <el-menu-item index="1">首页</el-menu-item>
-        <el-submenu index="2">
-          <template slot="title">我的工作台</template>
-<el-menu-item index="2-1">选项1</el-menu-item>
-<el-menu-item index="2-2">选项2</el-menu-item>
-<el-menu-item index="2-3">选项3</el-menu-item>
-</el-submenu>
-<el-menu-item index="3">订单管理</el-menu-item>
-</el-menu>
-</div>
-<router-view></router-view>
-</div>
+   <div id="app">
+    <div class="app_header">
+      <head-view></head-view>
+    </div>
+    <div class="app_content">
+        <left-view></left-view>
+    </div>
+      <div class="app_right">
+        <router-view></router-view>
+      </div>
+    </div>
+
+  </div>
 </template>
 <script>
+    import headView from './common/head'
+    import leftView from './common/left'
     export default {
+        data() {
+            return {
+                pathName: ''
+            }
+        },
         methods: {
             handleSelect(key, keyPath) {
                 switch (key) {
@@ -32,6 +37,51 @@
                         break;
                 }
             }
+        },
+        components: {
+            headView,
+            leftView
+        },
+        watch: {
+            '$route': function() {
+                this.pathName = this.$route.name;
+            }
         }
     }
 </script>
+<style>
+    #app {
+        height: 100vh;
+    }
+    
+    .app_header {
+        position: fixed;
+        width: 100vw;
+        z-index: 100;
+    }
+    
+    .app_header .title {
+        margin-left: 16px;
+        color: #fff;
+    }
+    
+    .app_content {
+        position: fixed;
+        box-sizing: border-box;
+        width: 15vw;
+        top: 0;
+        padding-top: 60px;
+        background-color: #eff2f7;
+        height: 100vh;
+    }
+    
+    .app_right {
+        position: absolute;
+        box-sizing: border-box;
+        right: 0;
+        top: 0;
+        padding-top: 80px;
+        width: 83vw;
+        height: 100vh;
+    }
+</style>
