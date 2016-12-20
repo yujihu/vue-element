@@ -1,12 +1,12 @@
 <template>
 <div class="header-wraper">
-    <el-menu theme="dark" default-active="1" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+    <el-menu theme="dark" default-active="1" class="el-menu-demo" mode="horizontal">
 
         <li class="title">
             <i class="el-icon-menu"></i>
             <span>合同管理系统</span>
         </li>
-        <span class="username">{{username}}</span>
+        <span class="username">欢迎您！ {{username}}</span>
     </el-menu>
 </div>
 </template>
@@ -16,13 +16,14 @@
     export default {
         data() {
             return {
-                username: 'lallaa',
+                username: '',
             }
         },
         methods: {
-            handleSelect(key, keyPath) {
-                console.log(key, keyPath);
-            }
+
+        },
+        created() {
+            this.username = this.$store.state.user.username;
         }
     }
 </script>

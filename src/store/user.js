@@ -4,20 +4,15 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-    state: {
-        user: {
-            username: '',
-            userid: ''
-        }
-    },
+    state: { user: JSON.parse(sessionStorage.getItem('user')) } || { user: { username: '', userid: '' } },
     mutations: {
         setUser(state, user) {
-            state.user.username = user.username;
-            state.user.userid = user.userid;
+            Object.assign(state, user);
+            sessionStorage.setItem('user', JSON.stringify(user));
         },
         deleUser(state) {
-            state.user.username = '';
-            state.user.userid = '';
+            Object.keys(state).forEach(k => Vue.delete(state, k));
+            sessionStorage.removeItem('user');
         }
     }
 })
