@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-    state: { user: JSON.parse(sessionStorage.getItem('user')) } || { user: { username: '', userid: '' } },
+    state: { user: JSON.parse(sessionStorage.getItem('user')) || { username: '', userid: '' } },
     mutations: {
         setUser(state, user) {
             Object.assign(state, user);

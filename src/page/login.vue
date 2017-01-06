@@ -3,8 +3,8 @@
       <el-form-item label="账号" prop="username">
         <el-input v-model="ruleForm2.username"></el-input>
     </el-form-item>
-    <el-form-item label="密码" prop="pass">
-        <el-input type="password" v-model="ruleForm2.pass" auto-complete="off"></el-input>
+    <el-form-item label="密码" prop="password">
+        <el-input type="password" v-model="ruleForm2.password" auto-complete="off"></el-input>
     </el-form-item>
     <el-form-item>
         <el-button type="primary" @click="handleSubmit2">提交</el-button>
@@ -31,12 +31,12 @@
             };
             return {
                 ruleForm2: {
-                    pass: '',
+                    password: '',
                     username: '',
                     userid: ''
                 },
                 rules2: {
-                    pass: [{
+                    password: [{
                         validator: validatePass,
                         trigger: 'blur'
                     }],
@@ -55,10 +55,26 @@
                 this.$refs.ruleForm2.validate((valid) => {
                     if (valid) {
                         // alert('submit!');
-                        this.$store.commit('setUser', this.ruleForm2);
-                        this.$router.replace({
-                            path: 'home/'
-                        });
+                        this.$http.post("http://localhost:3000/api/login", this.ruleForm2, {
+                            emulateJSON: true
+                        }).then(
+                            function(res) {
+                                if (res.body !== 0) {
+                                    // alert(res.body);
+                                    var response = JSON.parse(res.body);
+                                    this.ruleForm2.userid = '' + response.id;
+                                    this.$store.commit('setUser', this.ruleForm2);
+                                    this.$router.replace({
+                                        path: 'home/'
+                                    });
+                                } else {
+                                    alert('登录失败');
+                                }
+                            },
+                            function(res) {
+                                // 处理失败的结果
+                            }
+                        );
                     } else {
                         // console.log('error submit!!');
                         return false;
