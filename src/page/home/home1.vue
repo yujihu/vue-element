@@ -6,7 +6,6 @@
       </div>
     
     <el-button type="primary" @click="handleClick3" class="add-contract">添加合同</el-button>
-  </el-input>
     <el-table
     :data="tableData"
     stripe

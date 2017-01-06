@@ -12,3 +12,4 @@ vue+element+webpack+vueRouter+vuex
 ### 2017-1-6
 * 基本框架搭建
 * 实现登录功能
+* 增删查改用户

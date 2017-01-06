@@ -11,7 +11,7 @@
     <el-menu-item index="/home/home3">用户管理</el-menu-item>
 </el-menu-item-group>
 </el-submenu>
-<el-menu-item index="/home/home2"><i class="el-icon-setting"></i>用户管理</el-menu-item>
+<el-menu-item index="/home/user"><i class="el-icon-setting"></i>用户管理</el-menu-item>
 </el-menu>
 
 </template>

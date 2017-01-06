@@ -3,6 +3,7 @@ import home from '../page/home.vue'
 import home1 from '../page/home/home1.vue'
 import home2 from '../page/home/home2.vue'
 import home3 from '../page/home/home3.vue'
+import user from '../page/home/user.vue'
 
 export default [{
         path: '/',
@@ -26,6 +27,10 @@ export default [{
             {
                 path: 'home3',
                 component: home3
+            },
+            {
+                path: 'user',
+                component: user
             }
         ]
     }
