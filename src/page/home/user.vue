@@ -2,7 +2,7 @@
   <div>
       <div class="search">
           <el-input placeholder="请输入内容" v-model="searchTxt" style="width: 300px;">
-         <el-button slot="append" icon="search"></el-button>
+          <el-button slot="append" icon="search" @click="search"></el-button>
       </div>
     
     <el-button type="primary" @click="addUserClick" class="add-contract">添加用户</el-button>
@@ -89,6 +89,7 @@
                     },
                     function(res) {
                         // 处理失败的结果
+                        this.$message.error('获取数据失败');
                     }
                 );
             },
@@ -112,6 +113,7 @@
                     },
                     function(res) {
                         // 处理失败的结果
+                        this.$message.error('添加用户失败');
                         // this.addUser = false;
                         // this.form = {};
                     }
@@ -137,6 +139,7 @@
                     },
                     function(res) {
                         // 处理失败的结果
+                        this.$message.error('更新用户失败');
                         // this.updUser = false;
                         // this.form = {};
                     }
@@ -231,6 +234,34 @@
                     this.tableData = this.allData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
                 }
                 // console.log(currentPage);
+            },
+            search() {
+                if (this.searchTxt) {
+                    this.$http.get("http://localhost:3000/api/user/" + this.searchTxt, {
+                        emulateJSON: true
+                    }).then(
+                        function(res) {
+                            if (res.body !== 0) {
+                                // alert(res.body);
+                                var response = JSON.parse(res.body);
+                                this.allData = response;
+                                this.totalSize = this.allData.length;
+                                this.totalPage = Math.ceil(this.totalSize / this.pageSize);
+                                if (this.totalSize >= this.pageSize) {
+                                    this.tableData = this.allData.slice(0, this.pageSize);
+                                } else {
+                                    this.tableData = this.allData.slice(0, this.totalSize);
+                                }
+                            } else {
+                                this.$message.error('暂无数据');
+                            }
+                        },
+                        function(res) {
+                            // 处理失败的结果
+                            this.$message.error('搜索失败');
+                        }
+                    );
+                }
             }
         },
 
