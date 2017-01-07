@@ -44,20 +44,20 @@
       @current-change="changePage">
     </el-pagination>
   </div>
-  <el-dialog title="详细信息" v-model="dialogFormVisible">
-  <el-form :model="form">
+  <el-dialog title="详细信息" :show-close="false" v-model="dialogFormVisible">
+  <el-form :model="form" :rules="rules" ref="userForm">
     <el-form-item label="id" :label-width="formLabelWidth">
       <el-input disabled v-model="form.id" auto-complete="off"></el-input>
     </el-form-item>
-    <el-form-item label="用户名" :label-width="formLabelWidth">
+    <el-form-item label="用户名" :label-width="formLabelWidth" prop="username">
       <el-input :disabled="disabled" v-model="form.username" auto-complete="off"></el-input>
     </el-form-item>
-    <el-form-item label="密码" :label-width="formLabelWidth">
+    <el-form-item label="密码" :label-width="formLabelWidth" prop="password">
       <el-input :disabled="disabled" v-model="form.password" auto-complete="off"></el-input>
     </el-form-item>
   </el-form>
   <div slot="footer" class="dialog-footer">
-    <el-button @click="dialogFormVisible = false">取 消</el-button>
+    <el-button @click="cancelSubmit">取 消</el-button>
     <el-button type="primary" @click="btnSubmit">确 定</el-button>
   </div>
 </el-dialog>
@@ -84,7 +84,7 @@
                                 this.tableData = this.allData.slice(0, this.totalSize);
                             }
                         } else {
-                            alert('暂无数据');
+                            this.$message.error('暂无数据');
                         }
                     },
                     function(res) {
@@ -100,15 +100,20 @@
                         if (res.body.id) {
                             this.form = res.body;
                             this.tableData.push(this.form);
-                            alert('添加用户成功');
+                            this.$message({
+                                type: 'success',
+                                message: '添加用户成功!'
+                            });
                         } else {
-                            alert('添加用户失败');
+                            this.$message.error('添加用户失败');
                         }
-                        this.addUser = false;
+                        // this.addUser = false;
+                        // this.form = {};
                     },
                     function(res) {
                         // 处理失败的结果
-                        this.addUser = false;
+                        // this.addUser = false;
+                        // this.form = {};
                     }
                 );
             },
@@ -119,16 +124,21 @@
                     function(res) {
                         if (res.body[0] === 1) {
                             Object.assign(this.tableData[this.index], this.form);
-                            alert('更新用户成功');
+                            this.$message({
+                                type: 'success',
+                                message: '更新用户成功!'
+                            });
                         } else {
-                            alert('更新用户失败');
+                            this.$message.error('更新用户失败');
                         }
-                        this.updUser = false;
-                        this.dialogFormVisible = false;
+                        // this.updUser = false;
+                        // this.form = {};
+                        // this.dialogFormVisible = false;
                     },
                     function(res) {
                         // 处理失败的结果
-                        this.updUser = false;
+                        // this.updUser = false;
+                        // this.form = {};
                     }
                 );
             },
@@ -157,33 +167,61 @@
                 // console.log(row.id);
             },
             deleteRow(index, rows) {
-                this.$http.delete("http://localhost:3000/api/user/" + rows[index].id, this.form, {
-                    emulateJSON: true
-                }).then(
-                    function(res) {
-                        if (res.body === 1) {
-                            alert('删除用户成功');
-                            rows.splice(index, 1);
-                        } else {
-                            alert('删除用户失败');
+                this.$confirm('此操作将永久删除该条记录, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$http.delete("http://localhost:3000/api/user/" + rows[index].id, this.form, {
+                        emulateJSON: true
+                    }).then(
+                        function(res) {
+                            if (res.body === 1) {
+                                rows.splice(index, 1);
+                                this.$message({
+                                    type: 'success',
+                                    message: '删除成功!'
+                                });
+                            } else {
+                                this.$message.error('删除失败');
+                            }
+                        },
+                        function(res) {
+                            // 处理失败的结果
+                            this.$message.error('删除失败');
                         }
-                    },
-                    function(res) {
-                        // 处理失败的结果
-                    }
-                );
+                    );
+                });
             },
             btnSubmit() {
                 if (!this.disabled) {
                     //Object.assign(this.tableData[this.index], this.form);
-                    if (this.addUser) {
-                        this.addUserSubmit();
-                    }
-                    if (this.updUser) {
-                        this.updUserSubmit();
-                    }
+                    this.$refs.userForm.validate((valid) => {
+                        if (valid) {
+                            if (this.addUser) {
+                                this.addUserSubmit();
+                            } else if (this.updUser) {
+                                this.updUserSubmit();
+                            } else {
+                                this.form = {};
+                            }
+                        } else {
+                            return false;
+                        }
+
+                    });
+                    // this.dialogFormVisible = false;
                 }
+            },
+            cancelSubmit() {
                 this.dialogFormVisible = false;
+                this.form = {};
+                if (this.updUser) {
+                    this.updUser = false;
+                }
+                if (this.addUser) {
+                    this.addUser = false;
+                }
             },
             changePage(currentPage) {
                 this.currentPage = currentPage;
@@ -204,14 +242,26 @@
                 addUser: false,
                 updUser: false,
                 dialogFormVisible: false,
-                formLabelWidth: '60px',
+                formLabelWidth: '80px',
                 disabled: true,
                 searchTxt: '',
                 index: -1,
                 pageSize: 15,
                 totalSize: 0,
                 currentPage: 1,
-                totalPage: 0
+                totalPage: 0,
+                rules: {
+                    username: [{
+                        required: true,
+                        message: '请输入用户名',
+                        trigger: 'blur'
+                    }],
+                    password: [{
+                        required: true,
+                        message: '请输入密码',
+                        trigger: 'blur'
+                    }]
+                }
             }
         },
         created() {

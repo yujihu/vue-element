@@ -61,18 +61,19 @@
                             function(res) {
                                 if (res.body !== 0) {
                                     // alert(res.body);
-                                    var response = JSON.parse(res.body);
+                                    var response = res.body;
                                     this.ruleForm2.userid = '' + response.id;
                                     this.$store.commit('setUser', this.ruleForm2);
                                     this.$router.replace({
                                         path: 'home/'
                                     });
                                 } else {
-                                    alert('登录失败');
+                                    this.$message.error('用户名或密码错误，请重新输入！');
                                 }
                             },
                             function(res) {
                                 // 处理失败的结果
+                                this.$message.error('登录失败！');
                             }
                         );
                     } else {
