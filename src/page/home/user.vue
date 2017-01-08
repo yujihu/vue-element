@@ -261,6 +261,8 @@
                             this.$message.error('搜索失败');
                         }
                     );
+                } else {
+                    this.getUsers();
                 }
             }
         },

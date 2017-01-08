@@ -1,6 +1,7 @@
 # vue-element
 vue+element+webpack+vueRouter+vuex
 
+* 生产环境服务器采用nginx
 * 采用vue-cil构建项目
 * 采用element搭建界面
 * 采用webpack进行模块管理
