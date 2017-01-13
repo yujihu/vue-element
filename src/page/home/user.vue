@@ -65,10 +65,16 @@
 </template>
 
 <script>
+    import {
+        Loading
+    } from 'element-ui';
     export default {
         methods: {
             getUsers() {
-                this.$http.get("http://localhost:3000/api/user", {
+                let loadingInstance1 = Loading.service({
+                    fullscreen: true
+                });
+                this.$http.get(this.url, {
                     emulateJSON: true
                 }).then(
                     function(res) {
@@ -86,21 +92,26 @@
                         } else {
                             this.$message.error('暂无数据');
                         }
+                        loadingInstance1.close();
                     },
                     function(res) {
                         // 处理失败的结果
                         this.$message.error('获取数据失败');
+                        loadingInstance1.close();
                     }
                 );
             },
             addUserSubmit() {
-                this.$http.post("http://localhost:3000/api/user", this.form, {
+                let loadingInstance1 = Loading.service({
+                    fullscreen: true
+                });
+                this.$http.post(this.url, this.form, {
                     emulateJSON: true
                 }).then(
                     function(res) {
                         if (res.body.id) {
                             this.form = res.body;
-                            this.tableData.push(this.form);
+                            this.tableData.unshift(this.form);
                             this.$message({
                                 type: 'success',
                                 message: '添加用户成功!'
@@ -108,19 +119,24 @@
                         } else {
                             this.$message.error('添加用户失败');
                         }
+                        loadingInstance1.close();
                         // this.addUser = false;
                         // this.form = {};
                     },
                     function(res) {
                         // 处理失败的结果
                         this.$message.error('添加用户失败');
+                        loadingInstance1.close();
                         // this.addUser = false;
                         // this.form = {};
                     }
                 );
             },
             updUserSubmit() { //更新用户信息
-                this.$http.put("http://localhost:3000/api/user", this.form, {
+                let loadingInstance1 = Loading.service({
+                    fullscreen: true
+                });
+                this.$http.put(this.url, this.form, {
                     emulateJSON: true
                 }).then(
                     function(res) {
@@ -133,6 +149,7 @@
                         } else {
                             this.$message.error('更新用户失败');
                         }
+                        loadingInstance1.close();
                         // this.updUser = false;
                         // this.form = {};
                         // this.dialogFormVisible = false;
@@ -140,6 +157,7 @@
                     function(res) {
                         // 处理失败的结果
                         this.$message.error('更新用户失败');
+                        loadingInstance1.close();
                         // this.updUser = false;
                         // this.form = {};
                     }
@@ -175,7 +193,10 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$http.delete("http://localhost:3000/api/user/" + rows[index].id, this.form, {
+                    let loadingInstance1 = Loading.service({
+                        fullscreen: true
+                    });
+                    this.$http.delete(this.url + rows[index].id, this.form, {
                         emulateJSON: true
                     }).then(
                         function(res) {
@@ -188,10 +209,12 @@
                             } else {
                                 this.$message.error('删除失败');
                             }
+                            loadingInstance1.close();
                         },
                         function(res) {
                             // 处理失败的结果
                             this.$message.error('删除失败');
+                            loadingInstance1.close();
                         }
                     );
                 });
@@ -237,7 +260,10 @@
             },
             search() {
                 if (this.searchTxt) {
-                    this.$http.get("http://localhost:3000/api/user/" + this.searchTxt, {
+                    let loadingInstance1 = Loading.service({
+                        fullscreen: true
+                    });
+                    this.$http.get(this.url + this.searchTxt, {
                         emulateJSON: true
                     }).then(
                         function(res) {
@@ -255,10 +281,12 @@
                             } else {
                                 this.$message.error('暂无数据');
                             }
+                            loadingInstance1.close();
                         },
                         function(res) {
                             // 处理失败的结果
                             this.$message.error('搜索失败');
+                            loadingInstance1.close();
                         }
                     );
                 } else {
@@ -269,6 +297,7 @@
 
         data() {
             return {
+                url: 'http://localhost:3000/api/user/',
                 allData: [],
                 tableData: [],
                 form: {},

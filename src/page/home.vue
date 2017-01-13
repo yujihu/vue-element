@@ -14,28 +14,12 @@
   </div>
 </template>
 <script>
-    import headView from './common/head'
-    import leftView from './common/left'
+    import headView from './common/head';
+    import leftView from './common/left';
     export default {
         data() {
             return {
                 pathName: ''
-            }
-        },
-        methods: {
-            handleSelect(key, keyPath) {
-                switch (key) {
-                    case '1':
-                        this.$router.push({
-                            path: 'home1'
-                        });
-                        break;
-                    case '3':
-                        this.$router.push({
-                            path: 'home3'
-                        });
-                        break;
-                }
             }
         },
         components: {
